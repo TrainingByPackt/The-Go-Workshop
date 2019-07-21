@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -12,10 +13,12 @@ type messageData struct {
 	Message string `json:"message"`
 }
 
-func getDataAndReturnResponse() messageData {
+func postDataAndReturnResponse(msg messageData) messageData {
+	// turn the message into bytes we can POST to the server
+	jsonBytes, _ := json.Marshal(msg)
 
-	// send the GET request
-	r, err := http.Get("http://localhost:8080")
+	// send the POST request
+	r, err := http.Post("http://localhost:8080", "application/json", bytes.NewBuffer(jsonBytes))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,6 +42,12 @@ func getDataAndReturnResponse() messageData {
 }
 
 func main() {
-	data := getDataAndReturnResponse()
+	// create the message we want to POST to the server
+	msg := messageData{Message: "Hi Server!"}
+
+	// POST the data
+	data := postDataAndReturnResponse(msg)
+
+	// print the response
 	fmt.Println(data.Message)
 }
