@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -14,7 +15,12 @@ func TestHello_ServeHTTP(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	server.ServeHTTP(w, r)
-	if w.Body.String() != "{\"message\": \"hello world\"}" {
-		t.Errorf("Expected '{\"message\": \"hello world\"}' string but received: '%s'", w.Body.String())
+	names := Names{}
+	err := json.Unmarshal(w.Body.Bytes(), &names)
+	if err != nil {
+		t.Error(err)
+	}
+	if len(names.Names) < 2 {
+		t.Errorf("Expected more than 2 names. recieved: '%+v'", names)
 	}
 }
