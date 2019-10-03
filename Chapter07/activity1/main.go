@@ -1,6 +1,15 @@
 package main
+
+import (	
+	"errors"
+	"fmt"
+	"os"
+)
+
+type Payer interface {
 	Pay() (string, float64)
 }
+
 
 type Developer struct {
 	Individual        Employee
