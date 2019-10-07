@@ -1,62 +1,39 @@
 package main
-
+// Import extra functionality from packages
 import (
+	"errors"
 	"fmt"
+	"log"
+	"math/rand"
+	"strconv"
+	"time"
 )
-
-type Shape interface {
-	Area() float64
-	Name() string
+// Taken from: https://en.wiktionary.org/wiki/Hello_World#Translations
+var helloList = []string{
+	"Hello, world",
+	"Καλημέρα κόσμε",
+	"こんにちは世界",
+	"سلام دنیا‎",
+	"Привет, мир",
 }
-
-type triangle struct {
-	base   float64
-	height float64
-}
-
-type rectangle struct {
-	length float64
-	width  float64
-}
-
-type square struct {
-	side float64
-}
-
 func main() {
-	t := triangle{base: 15.5, height: 20.1}
-	r := rectangle{length: 20, width: 10}
-	s := square{side: 10}
-	printShapeDetails(t, r, s)
-}
-
-func printShapeDetails(shapes ...Shape) {
-	for _, item := range shapes {
-		fmt.Printf("The area of %s is: %.2f\n", item.Name(), item.Area())
+	// Seed random number generator using the current time
+	rand.Seed(time.Now().UnixNano())
+	// Generate a random number in the range of out list
+	index := rand.Intn(len(helloList))
+	// Call a function and receive multiple return values
+	msg, err := hello(index)
+	// Handle any errors
+	if err != nil {
+		log.Fatal(err)
 	}
+	// Print our message to the console
+	fmt.Println(msg)
 }
-
-func (t triangle) Area() float64 {
-	return (t.base * t.height) / 2
-}
-
-func (t triangle) Name() string {
-	return "triangle"
-}
-
-func (r rectangle) Area() float64 {
-
-	return r.length * r.width
-}
-
-func (r rectangle) Name() string {
-	return "rectangle"
-}
-
-func (s square) Area() float64 {
-	return s.side * s.side
-}
-
-func (s square) Name() string {
-	return "square"
+func hello(index int) (string, error) {
+	if index < 0 || index > len(helloList)-1 {
+		// Create an error, convert the int type to a string
+		return "", errors.New("out of range: " + strconv.Itoa(index))
+	}
+	return helloList[index], nil
 }
